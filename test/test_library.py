@@ -1322,6 +1322,11 @@ class LibraryFieldTypesTest(unittest.TestCase):
         assert np(b"/tmp") == t.parse("/tmp")
         assert np(b"/tmp/\xc3\xa4lbum") == t.parse("/tmp/\u00e4lbum/")
 
+        root_path = beets.config["directory"].as_filename()
+        assert root_path != ""
+
+        assert bytestring_path(os.path.join(root_path, "foo")) == t.from_sql(b"foo")
+
     def test_musicalkey(self):
         t = beets.library.MusicalKey()
 

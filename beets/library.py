@@ -193,7 +193,7 @@ class DateType(types.Float):
                 return self.null
 
 
-class PathType(types.Type[bytes, bytes]):
+class PathType(types.Type[bytes, bytes | None]):
     """A dbcore type for filesystem paths.
 
     These are represented as `bytes` objects, in keeping with
@@ -208,8 +208,13 @@ class PathType(types.Type[bytes, bytes]):
         """Create a path type object.
 
         `nullable` controls whether the type may be missing, i.e., None.
+        `rootdir` controls the root directory for relative paths. By default,
+        it's beets' `directory` config option.
         """
         self.nullable = nullable
+        self.rootdir = bytestring_path(
+            normpath(beets.config["directory"].as_filename())
+        )
 
     @property
     def null(self):
@@ -219,6 +224,9 @@ class PathType(types.Type[bytes, bytes]):
             return b""
 
     def format(self, value):
+        if value is None:
+            return "<null>"
+
         return util.displayable_path(value)
 
     def parse(self, string):
@@ -237,7 +245,17 @@ class PathType(types.Type[bytes, bytes]):
             return value
 
     def from_sql(self, sql_value):
-        return self.normalize(sql_value)
+        if sql_value is None:
+            return self.null
+
+        normalized = self.normalize(sql_value)
+
+        # If not absolute, prepend the root directory.
+        if not os.path.isabs(normalized):
+            normalized = os.path.join(self.rootdir, normalized)
+
+        # TODO: is this an extra normalize call?
+        return self.normalize(normalized)
 
     def to_sql(self, value):
         if isinstance(value, bytes):
