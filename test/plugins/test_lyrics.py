@@ -34,7 +34,7 @@ if not github_ci and not importlib.util.find_spec("langdetect"):
     pytest.skip("langdetect isn't available", allow_module_level=True)
 
 # Ignore E402 & I001: ensure we have langdetect before importing lyrics plugin.
-from beetsplug import lyrics # noqa: E402, I001
+from beetsplug import lyrics  # noqa: E402, I001
 
 PHRASE_BY_TITLE = {
     "Lady Madonna": "friday night arrives without a suitcase",
