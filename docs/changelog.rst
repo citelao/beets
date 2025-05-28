@@ -31,6 +31,8 @@ Bug fixes:
   :bug:`5788`
 * tests: Fix library tests failing on Windows when run from outside ``D:/``.
   :bug:`5802`
+* tests: Fix tests failing without ``langdetect`` (by making it required).
+  :bug:`5797`
 
 For packagers:
 
