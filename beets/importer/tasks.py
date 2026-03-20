@@ -170,7 +170,7 @@ class ImportTask(BaseImportTask):
         self.should_remove_duplicates = False
         self.should_merge_duplicates = False
         self.is_album = True
-        self.search_ids = []  # user-supplied candidate IDs.
+        self.search_ids: list[str] = []  # user-supplied candidate IDs.
 
     def set_choice(
         self, choice: Action | autotag.AlbumMatch | autotag.TrackMatch

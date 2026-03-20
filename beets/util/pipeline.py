@@ -91,7 +91,10 @@ def _invalidate_queue(q, val=None, sync=True):
             q.mutex.release()
 
 
-class CountedQueue(queue.Queue):
+T = TypeVar("T")  # Type of the queued item
+
+
+class CountedQueue(queue.Queue[T]):
     """A queue that keeps track of the number of threads that are
     still feeding into it. The queue is poisoned when all threads are
     finished with the queue.
